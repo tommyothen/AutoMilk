@@ -1,0 +1,8 @@
+name: Automilk
+version: '${project.version}'
+main: dev.tommyothen.plugins.automilk.Automilk
+api-version: 1.18
+prefix: 'AutoMilk'
+authors: [ DaSushiAsian ]
+description: Automatically milk cows with a dispenser
+website: tommyothen.dev
