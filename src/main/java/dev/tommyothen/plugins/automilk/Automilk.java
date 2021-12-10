@@ -40,21 +40,29 @@ public final class Automilk extends JavaPlugin implements Listener {
         // Get event as a block
         Block block = event.getBlock();
 
+        // Get the item that was just dispensed
+        ItemStack dispensedItem = event.getItem();
+
+        // Return if the item is not a bucket or bowl
+        if (!dispensedItem.getType().equals(Material.BUCKET) && !dispensedItem.getType().equals(Material.BOWL))
+            return;
+
+        // Milk the cow or the mooshroom
+        collectItemFromEntity(
+                event,
+                dispensedItem.getType().equals(Material.BUCKET),
+                block,
+                dispensedItem
+        );
+    }
+
+
+    void collectItemFromEntity(BlockDispenseEvent event, Boolean isCow, Block block, ItemStack dispensedItem) {
         // Get the dispenser that was just fired
         InventoryHolder dispenserIHolder = (InventoryHolder) block.getState();
 
         // Get the inventory of the dispenser
         Inventory dispenserInventory = dispenserIHolder.getInventory();
-
-        // Get the item that was just dispensed
-        ItemStack dispensedItem = event.getItem();
-
-        // Get the name of the dispensed item
-        String dispensedItemName = dispensedItem.getType().toString();
-
-        // Return if the item is not an empty bucket
-        if (!dispensedItemName.equals("BUCKET"))
-            return;
 
         // Get the dispenser face direction
         DirectionalContainer dispenser = (DirectionalContainer) block.getState().getData();
@@ -76,15 +84,15 @@ public final class Automilk extends JavaPlugin implements Listener {
             // Get the type of the entity
             String entityType = entity.getType().toString();
 
-            // If the entity is a cow
-            if (entityType.equals("COW")) {
-                LOGGER.log(Level.INFO, "Cow found!");
+            // If the entity is a cow or a mooshroom respectively
+            if (entityType.equals(isCow ? "COW" : "MUSHROOM_COW")) {
+                LOGGER.log(Level.INFO, (isCow ? "COW" : "MOOSHROOM") + " found!");
 
-                // Remove the empty bucket from the dispenser inventory
+                // Remove the empty bucket or bowl from the dispenser inventory
                 dispenserInventory.removeItemAnySlot(dispensedItem);
 
-                // Set the event item to a milk bucket
-                event.setItem(new ItemStack(Material.MILK_BUCKET));
+                // Set the event item to a milk bucket or mushroom stew
+                event.setItem(new ItemStack(isCow ? Material.MILK_BUCKET : Material.MUSHROOM_STEW));
                 return;
             }
         }
