@@ -13,6 +13,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.DirectionalContainer;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.util.Collection;
 import java.util.logging.Level;
@@ -88,8 +90,13 @@ public final class Automilk extends JavaPlugin implements Listener {
             if (entityType.equals(isCow ? "COW" : "MUSHROOM_COW")) {
                 LOGGER.log(Level.INFO, (isCow ? "COW" : "MOOSHROOM") + " found!");
 
-                // Remove the empty bucket or bowl from the dispenser inventory
-                dispenserInventory.removeItemAnySlot(dispensedItem);
+                BukkitScheduler scheduler = getServer().getScheduler();
+                scheduler.scheduleSyncDelayedTask(this, new Runnable() {
+                    @Override
+                    public void run() {
+                        dispenserInventory.removeItem(new ItemStack(isCow ? Material.BUCKET : Material.BOWL));
+                    }
+                }, 1L);
 
                 // Set the event item to a milk bucket or mushroom stew
                 event.setItem(new ItemStack(isCow ? Material.MILK_BUCKET : Material.MUSHROOM_STEW));
