@@ -88,8 +88,6 @@ public final class Automilk extends JavaPlugin implements Listener {
 
             // If the entity is a cow or a mooshroom respectively
             if (entityType.equals(isCow ? "COW" : "MUSHROOM_COW")) {
-                LOGGER.log(Level.INFO, (isCow ? "COW" : "MOOSHROOM") + " found!");
-
                 BukkitScheduler scheduler = getServer().getScheduler();
                 scheduler.scheduleSyncDelayedTask(this, new Runnable() {
                     @Override
